@@ -3,8 +3,7 @@ open Jest
 
 let expect_all xs =
   let (a, b) = xs |> List.toArray |> Array.unzip in
-  let open Expect in
-  expect a |> toEqual b
+  let open Expect in  expect a |> toEqual b
 
 let rec last = function [] -> None | [x] -> Some x | _x :: xs -> last xs
 
@@ -13,15 +12,6 @@ let rec last_two = function
 | [a; b] -> Some (a, b)
 | _ :: xs -> last_two xs
 
-
-(* let at n xs =
-  let rec go acc xs = match (acc, xs) with
-  | (_, []) -> None
-  | (1, x :: _) -> Some x
-  | (acc, _ :: xs) -> go (acc - 1) xs
-  in
-  if n >= 1 then go n xs else None *)
-
 let rec at n = function
 | [] -> None
 | x :: xs ->
@@ -29,6 +19,14 @@ let rec at n = function
   | 1 -> Some x
   | n when n < 1 -> None
   | n -> at (n - 1) xs
+
+let length xs =
+  let rec go acc = function [] -> acc | _ :: xs -> go (acc + 1) xs in
+  go 0 xs
+
+let reverse xs =
+  let rec go acc = function [] -> acc | x :: xs -> go (x :: acc) xs in
+  go [] xs
 
 let () = describe "Lists" @@ fun () ->
 
@@ -54,3 +52,16 @@ test "at" (fun () ->
     at 10 [1;2;3], None;
     at 4 [1;2;3;4;5;6], Some 4;
   ]);
+
+test "length" (fun () ->
+  expect_all [
+    length [], 0;
+    length [1;2;3], 3;
+  ]);
+
+test "reverse" (fun () ->
+  expect_all [
+    reverse [], [];
+    reverse [1], [1];
+    reverse [1;2;3], [3;2;1];
+  ])
