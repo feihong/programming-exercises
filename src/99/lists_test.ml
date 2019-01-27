@@ -50,14 +50,14 @@ type 'a node =
   | One of 'a
   | Many of 'a node list
 
-let flatten nested =
-  let rec aux acc = function
-  | One x -> x :: acc
-  | Many [] -> acc
-  | Many (x :: xs) ->
-    let acc' = aux acc x in
-    aux acc' (Many xs)
-  in nested |. List.map (fun xs -> aux [] xs |. List.reverse) |. List.flatten
+let flatten list =
+    let rec aux acc = function
+    | [] -> acc
+    | One x :: xs -> aux (x :: acc) xs
+    | Many x :: xs ->
+      let acc' = aux acc x in
+      aux acc' xs
+    in List.reverse (aux [] list)
 
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
