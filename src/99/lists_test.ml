@@ -59,6 +59,12 @@ let flatten list =
       aux acc' xs
     in List.reverse (aux [] list)
 
+(* 8 *)
+let rec compress = function
+| x :: (y :: _ as xs) when x = y -> compress xs
+| x :: xs -> x :: compress xs
+| smaller -> smaller
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -117,4 +123,13 @@ test "flatten strings" (fun () ->
   flatten [ One "a" ; Many [ One "b" ; Many [ One "c" ; One "d" ] ; One "e" ] ]
   ===
   ["a"; "b"; "c"; "d"; "e"]
-)
+);
+
+test "compress" (fun () ->
+  expect_all [
+    compress [], [];
+    compress [1], [1];
+    compress [1; 1], [1];
+    compress [1; 2], [1; 2];
+    compress [1;1;1;2;3;3;4;4;5;5;5;5], [1;2;3;4;5];
+  ]);
