@@ -1,0 +1,20 @@
+{
+  "name": "programming-exercises",
+  "version": "0.1.0",
+  "sources": {
+    "dir": "src",
+    "subdirs": true
+  },
+  "package-specs": {
+    "module": "commonjs",
+    "in-source": true
+  },
+  "suffix": ".bs.js",
+  "bs-dependencies": [
+    "@glennsl/bs-jest"
+  ],
+  "warnings": {
+    "error": "+A-d"
+  },
+  "refmt": 3
+}

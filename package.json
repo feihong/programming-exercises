@@ -1,0 +1,26 @@
+{
+  "name": "programming-exercises",
+  "version": "0.1.0",
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "feihong",
+  "license": "MIT",
+  "devDependencies": {
+    "bs-platform": "^4.0.18"
+  },
+  "jest": {
+    "testMatch": [
+      "**/src/**/*_test.bs.js"
+    ]
+  },
+  "dependencies": {
+    "@glennsl/bs-jest": "^0.4.7"
+  },
+  "scripts": {
+    "test": "jest",
+    "clean": "bsb -clean-world",
+    "build": "bsb -make-world",
+    "watch": "jest --watch"
+  }
+}
