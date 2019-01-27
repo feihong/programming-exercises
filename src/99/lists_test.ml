@@ -65,6 +65,18 @@ let rec compress = function
 | x :: xs -> x :: compress xs
 | smaller -> smaller
 
+(* 9 *)
+let pack lst =
+  let rec aux acc lst =
+    match (acc, lst) with
+    | ((a :: b) :: at, x :: xs) ->
+      if a = x
+      then aux ((a :: x :: b) :: at) xs
+      else aux ([x] :: acc) xs
+    | (acc, x :: xs) -> aux ([x] :: acc) xs
+    | (acc, []) -> acc
+  in aux [] lst |. List.reverse
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -132,4 +144,12 @@ test "compress" (fun () ->
     compress [1; 1], [1];
     compress [1; 2], [1; 2];
     compress [1;1;1;2;3;3;4;4;5;5;5;5], [1;2;3;4;5];
+  ]);
+
+test "pack" (fun () ->
+  expect_all [
+    pack [], [];
+    pack [1], [[1]];
+    pack [1; 2], [[1]; [2]];
+    pack [1;1;1;2;3;3;4;4;4;4;5], [[1;1;1]; [2]; [3;3]; [4;4;4;4]; [5]];
   ]);
