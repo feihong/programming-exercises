@@ -67,15 +67,14 @@ let rec compress = function
 
 (* 9 *)
 let pack lst =
-  let rec aux acc lst =
-    match (acc, lst) with
-    | ((a :: b) :: at, x :: xs) ->
-      if a = x
-      then aux ((a :: x :: b) :: at) xs
-      else aux ([x] :: acc) xs
-    | (acc, x :: xs) -> aux ([x] :: acc) xs
-    | (acc, []) -> acc
-  in aux [] lst |. List.reverse
+  let rec aux current acc = function
+  | [] -> []  (* if initial list if empty *)
+  | [x] -> (x :: current) :: acc
+  | a :: (b :: _ as xs) ->
+    if a = b
+    then aux (a :: current) acc xs
+    else aux [] ((a :: current) :: acc) xs
+  in aux [] [] lst |. List.reverse
 
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
