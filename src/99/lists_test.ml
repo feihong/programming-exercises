@@ -1,9 +1,11 @@
 open Belt
 open Jest
 
+let (===) a b = let open Expect in expect a |> toEqual b
+
 let expect_all xs =
   let (a, b) = xs |> List.toArray |> Array.unzip in
-  let open Expect in  expect a |> toEqual b
+  let open Expect in expect a |> toEqual b
 
 (* 1 *)
 let rec last = function [] -> None | [x] -> Some x | _x :: xs -> last xs
@@ -25,13 +27,17 @@ let rec at n = function
 
 (* 4 *)
 let length xs =
-  let rec go acc = function [] -> acc | _ :: xs -> go (acc + 1) xs in
-  go 0 xs
+  let rec aux acc = function
+  | [] -> acc
+  | _ :: xs -> aux (acc + 1) xs
+  in aux 0 xs
 
 (* 5 *)
 let reverse xs =
-  let rec go acc = function [] -> acc | x :: xs -> go (x :: acc) xs in
-  go [] xs
+  let rec aux acc = function
+  | [] -> acc
+  | x :: xs -> aux (x :: acc) xs
+  in aux [] xs
 
 (* 6 *)
 let is_palindrome xs = xs = reverse xs
@@ -44,7 +50,14 @@ type 'a node =
   | One of 'a
   | Many of 'a node list
 
-
+let flatten nested =
+  let rec aux acc = function
+  | One x -> x :: acc
+  | Many [] -> acc
+  | Many (x :: xs) ->
+    let acc' = aux acc x in
+    aux acc' (Many xs)
+  in nested |. List.map (fun xs -> aux [] xs |. List.reverse) |. List.flatten
 
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
@@ -92,3 +105,16 @@ test "is_palindrome" (fun () ->
     is_palindrome [1;2], false;
     is_palindrome [1;2;3;2;1], true;
   ]);
+
+test "flatten" (fun () ->
+  expect_all [
+    flatten [One 1], [1];
+    flatten [Many [One 1; One 2; One 3]], [1;2;3];
+    flatten [Many [One 1; One 2]; One 3; Many []; One 4], [1;2;3;4];
+  ]);
+
+test "flatten strings" (fun () ->
+  flatten [ One "a" ; Many [ One "b" ; Many [ One "c" ; One "d" ] ; One "e" ] ]
+  ===
+  ["a"; "b"; "c"; "d"; "e"]
+)
