@@ -76,6 +76,19 @@ let pack lst =
     else aux [] ((a :: current) :: acc) xs
   in aux [] [] lst |. List.reverse
 
+(* 10 *)
+let encode lst =
+  let rec aux current acc = function
+  | [] -> (match current with None -> [] | Some c -> c :: acc)
+  | x :: xs ->
+    match current with
+    | None -> aux (Some (1, x)) acc xs
+    | Some ((n, v) as c) ->
+      if x = v
+      then aux (Some (n + 1, v)) acc xs
+      else aux (Some (1, x)) (c :: acc) xs
+  in aux None [] lst |. List.reverse
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -152,3 +165,16 @@ test "pack" (fun () ->
     pack [1; 2], [[1]; [2]];
     pack [1;1;1;2;3;3;4;4;4;4;5], [[1;1;1]; [2]; [3;3]; [4;4;4;4]; [5]];
   ]);
+
+test "encode" (fun () ->
+  expect_all [
+    encode [], [];
+    encode [1], [1, 1];
+    encode [33;33], [2, 33];
+    encode [44; 55], [1, 44; 1, 55];
+  ]);
+
+test "encode string" (fun () ->
+   encode ["a";"a";"a";"a";"b";"c";"c";"a";"a";"d";"e";"e";"e";"e"]
+   ===
+   [(4, "a"); (1, "b"); (2, "c"); (2, "a"); (1, "d"); (4, "e")]);
