@@ -1,10 +1,4 @@
-open Jest
-
-let (===) a b = let open Expect in expect a |> toEqual b
-
-let expect_all xs =
-  let (a, b) = xs |> List.toArray |> Array.unzip in
-  let open Expect in expect a |> toEqual b
+open Prelude
 
 (* 1 *)
 let rec last = function [] -> None | [x] -> Some x | _x :: xs -> last xs
