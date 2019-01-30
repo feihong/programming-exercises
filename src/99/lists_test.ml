@@ -1,4 +1,3 @@
-open Belt
 open Jest
 
 let (===) a b = let open Expect in expect a |> toEqual b
@@ -79,15 +78,12 @@ let pack lst =
 (* 10 *)
 let encode lst =
   let rec aux current acc = function
-  | [] -> (match current with None -> [] | Some c -> c :: acc)
-  | x :: xs ->
-    match current with
-    | None -> aux (Some (1, x)) acc xs
-    | Some ((n, v) as c) ->
-      if x = v
-      then aux (Some (n + 1, v)) acc xs
-      else aux (Some (1, x)) (c :: acc) xs
-  in aux None [] lst |. List.reverse
+  | [] -> acc
+  | [x] -> (current + 1, x) :: acc
+  | a :: (b :: _ as xs) ->
+    if a = b then aux (current + 1) acc xs
+    else aux 0 ((current + 1, a) :: acc) xs
+  in aux 0 [] lst |. List.reverse
 
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
@@ -171,6 +167,7 @@ test "encode" (fun () ->
     encode [], [];
     encode [1], [1, 1];
     encode [33;33], [2, 33];
+    encode [33;33;33;22], [3, 33; 1, 22];
     encode [44; 55], [1, 44; 1, 55];
   ]);
 
