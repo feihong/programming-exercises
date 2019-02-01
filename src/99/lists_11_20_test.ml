@@ -54,6 +54,16 @@ let drop lst n =
     aux (count + 1) acc' xs
   in aux 1 [] lst |. List.reverse
 
+(* 17 *)
+let split lst n =
+  let rec aux count acc = function
+  | [] -> (List.reverse acc , [])
+  | h :: t as xs ->
+    if count <= 0
+    then (List.reverse acc, xs)
+    else aux (count - 1) (h :: acc) t
+  in aux n [] lst
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -117,4 +127,18 @@ test "drop string" (fun () ->
   drop ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"] 3
   ===
   ["a"; "b"; "d"; "e"; "g"; "h"; "j"]
+);
+
+test "split" (fun () ->
+  expect_all [
+    split [] 10, ([], []);
+    split [1;2;3] 0, ([], [1;2;3]);
+    split [1;2;3] 5, ([1;2;3], []);
+    split [1;2;3;4;5] 3, ([1;2;3], [4;5]);
+  ]);
+
+test "split string" (fun () ->
+  split ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"] 3
+  ===
+  (["a"; "b"; "c"], ["d"; "e"; "f"; "g"; "h"; "i"; "j"])
 );
