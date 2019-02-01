@@ -45,6 +45,15 @@ let replicate lst n =
     aux acc' xs
   in aux [] lst |. List.reverse
 
+(* 16 *)
+let drop lst n =
+  let rec aux count acc = function
+  | [] -> acc
+  | x :: xs ->
+    let acc' = if count mod n = 0 then acc else x :: acc in
+    aux (count + 1) acc' xs
+  in aux 1 [] lst |. List.reverse
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -93,4 +102,19 @@ test "replicate string" (fun () ->
   replicate ["a";"b";"c"] 3
   ===
   ["a"; "a"; "a"; "b"; "b"; "b"; "c"; "c"; "c"]
+);
+
+test "drop" (fun () ->
+  expect_all [
+    drop [] 10, [];
+    drop [1] 1, [];
+    drop [1] 2, [1];
+    drop [1;2] 2, [1];
+    drop [1;2;3] 1, [];
+  ]);
+
+test "drop string" (fun () ->
+  drop ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"] 3
+  ===
+  ["a"; "b"; "d"; "e"; "g"; "h"; "j"]
 );
