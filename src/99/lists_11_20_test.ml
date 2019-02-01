@@ -26,6 +26,16 @@ let decode lst =
   |. List.map (function One x -> [x] | Many (n, x) -> List.make n x)
   |. List.flatten
 
+(* 13 *)
+(* Same as my solution for 11 *)
+
+(* 14 *)
+let duplicate lst =
+  let rec aux acc = function
+  | [] -> acc
+  | x :: xs -> aux (x :: x :: acc) xs
+  in aux [] lst |. List.reverse
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -55,4 +65,17 @@ test "decode string" (fun () ->
   decode [Many (4,"a"); One "b"; Many (2,"c"); Many (2,"a"); One "d"; Many (4,"e")]
   ===
   ["a"; "a"; "a"; "a"; "b"; "c"; "c"; "a"; "a"; "d"; "e"; "e"; "e"; "e"]
+);
+
+test "duplicate" (fun () ->
+  expect_all [
+    duplicate [], [];
+    duplicate [1], [1;1];
+    duplicate [1; 2], [1;1;2;2]
+  ]);
+
+test "duplicate string" (fun () ->
+  duplicate ["a";"b";"c";"c";"d"]
+  ===
+  ["a"; "a"; "b"; "b"; "c"; "c"; "c"; "c"; "d"; "d"]
 );
