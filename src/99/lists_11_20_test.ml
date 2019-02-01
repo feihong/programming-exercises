@@ -36,6 +36,15 @@ let duplicate lst =
   | x :: xs -> aux (x :: x :: acc) xs
   in aux [] lst |. List.reverse
 
+(* 15 *)
+let replicate lst n =
+  let rec aux acc = function
+  | [] -> acc
+  | x :: xs ->
+    let acc' = List.concat (List.make n x) acc in
+    aux acc' xs
+  in aux [] lst |. List.reverse
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -78,4 +87,10 @@ test "duplicate string" (fun () ->
   duplicate ["a";"b";"c";"c";"d"]
   ===
   ["a"; "a"; "b"; "b"; "c"; "c"; "c"; "c"; "d"; "d"]
+);
+
+test "replicate string" (fun () ->
+  replicate ["a";"b";"c"] 3
+  ===
+  ["a"; "a"; "a"; "b"; "b"; "b"; "c"; "c"; "c"]
 );
