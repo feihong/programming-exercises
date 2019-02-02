@@ -79,6 +79,12 @@ let slice lst i k =
     else take (n - 1) (x :: acc) xs
   in lst |> drop i |> take (k - i + 1) [] |> List.reverse
 
+(* 19 *)
+let rotate lst n =
+  let n = if n < 0 then (List.length lst) + n else n in
+  let (a, b) = split lst n in
+  List.concat b a
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -172,3 +178,15 @@ test "slice string" (fun () ->
   ===
   ["c"; "d"; "e"; "f"; "g"]
 );
+
+test "rotate" (fun () ->
+  expect_all [
+    (
+      rotate ["a"; "b"; "c"; "d"; "e"; "f"; "g"; "h"] 3,
+      ["d"; "e"; "f"; "g"; "h"; "a"; "b"; "c"]
+    );
+    (
+      rotate ["a"; "b"; "c"; "d"; "e"; "f"; "g"; "h"] (-2),
+      ["g"; "h"; "a"; "b"; "c"; "d"; "e"; "f"]
+    )
+  ]);
