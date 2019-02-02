@@ -41,7 +41,7 @@ let replicate lst n =
   let rec aux acc = function
   | [] -> acc
   | x :: xs ->
-    let acc' = List.concat (List.make n x) acc in
+    let acc' = (List.make n x) @ acc in
     aux acc' xs
   in aux [] lst |. List.reverse
 
@@ -80,10 +80,11 @@ let slice lst i k =
   in lst |> drop i |> take (k - i + 1) [] |> List.reverse
 
 (* 19 *)
-let rotate lst n =
-  let n = if n < 0 then (List.length lst) + n else n in
-  let (a, b) = split lst n in
-  List.concat b a
+let rotate lst = function
+  | 0 -> lst
+  | n ->
+    let n = if n < 0 then (List.length lst) + n else n in
+    let (a, b) = split lst n in b @ a
 
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
