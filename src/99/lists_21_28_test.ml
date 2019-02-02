@@ -34,6 +34,10 @@ let rand_select lst n =
       aux (acc_len + 1) (x :: acc) (lst_len - 1) lst'
   in aux 0 [] (List.length lst) lst
 
+(* 24 *)
+let lotto_select n m =
+  range 1 m |. rand_select n
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -79,4 +83,12 @@ test "rand_select" (fun () ->
     rand_select [1;2;3;4;5;6;7] 3, [3;1;5];
     rand_select [1;2;3;4;5;6;7] 3, [2;7;3];
     rand_select [1;2;3;4;5;6;7] 3, [6;1;2];
+  ]);
+
+test "lotto_select" (fun () ->
+  expect_all [
+    lotto_select 1 2, [2];
+    lotto_select 1 2, [1];
+    lotto_select 3 10, [5;8;7];
+    lotto_select 3 10, [7;6;1];
   ]);
