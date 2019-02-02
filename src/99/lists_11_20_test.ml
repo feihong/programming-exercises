@@ -86,6 +86,15 @@ let rotate lst = function
     let n = if n < 0 then (List.length lst) + n else n in
     let (a, b) = split lst n in b @ a
 
+(* 20 *)
+let remove_at lst k =
+  let rec aux n acc = function
+  | [] -> List.reverse acc
+  | h :: t ->
+    if n <= 0 then List.reverse acc @ t
+    else aux (n - 1) (h :: acc) t
+  in aux k [] lst
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -190,4 +199,13 @@ test "rotate" (fun () ->
       rotate ["a"; "b"; "c"; "d"; "e"; "f"; "g"; "h"] (-2),
       ["g"; "h"; "a"; "b"; "c"; "d"; "e"; "f"]
     )
+  ]);
+
+test "remove_at" (fun () ->
+  expect_all [
+    remove_at [] 5, [];
+    remove_at [1;2;3] 0, [2;3];
+    remove_at [1;2;3] 1, [1;3];
+    remove_at [1;2;3] 2, [1;2];
+    remove_at [1;2;3] 6, [1;2;3];
   ]);
