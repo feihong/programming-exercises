@@ -64,6 +64,21 @@ let split lst n =
     else aux (count - 1) (h :: acc) t
   in aux n [] lst
 
+(* 18 *)
+let slice lst i k =
+  let rec drop n = function
+  | [] -> []
+  | _ :: t as xs ->
+    if n <= 0 then xs
+    else drop (n - 1) t
+  in
+  let rec take n acc = function
+  | [] -> acc
+  | x :: xs ->
+    if n <= 0 then acc
+    else take (n - 1) (x :: acc) xs
+  in lst |> drop i |> take (k - i + 1) [] |> List.reverse
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -141,4 +156,19 @@ test "split string" (fun () ->
   split ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"] 3
   ===
   (["a"; "b"; "c"], ["d"; "e"; "f"; "g"; "h"; "i"; "j"])
+);
+
+test "slice" (fun () ->
+  expect_all [
+    slice [1;2;3] 0 0, [1];
+    slice [1;2;3;4] 1 2, [2;3];
+    slice [1;2;3] 3 5, [];
+    slice [1;2;3;4] 3 10, [4];
+    slice [1;2;3;4] 0 10, [1;2;3;4];
+  ]);
+
+test "slice string" (fun () ->
+  slice ["a";"b";"c";"d";"e";"f";"g";"h";"i";"j"] 2 6
+  ===
+  ["c"; "d"; "e"; "f"; "g"]
 );
