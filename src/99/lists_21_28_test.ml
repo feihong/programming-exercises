@@ -38,6 +38,10 @@ let rand_select lst n =
 let lotto_select n m =
   range 1 m |. rand_select n
 
+(* 25 *)
+let permutation lst =
+  rand_select lst (List.length lst)
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -91,4 +95,12 @@ test "lotto_select" (fun () ->
     lotto_select 1 2, [1];
     lotto_select 3 10, [5;8;7];
     lotto_select 3 10, [7;6;1];
+  ]);
+
+test "permutation" (fun () ->
+  expect_all [
+    permutation [], [];
+    permutation [1;2;3], [2;3;1];
+    permutation [1;2;3], [1;3;2];
+    permutation [1;2;3], [2;1;3];
   ]);
