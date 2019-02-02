@@ -1,5 +1,6 @@
 open Prelude
 
+(* 21 *)
 let insert_at x n lst =
   let rec aux n acc = function
   | [] -> List.reverse (x :: acc)
@@ -8,7 +9,15 @@ let insert_at x n lst =
     else aux (n - 1) (h :: acc) t
   in aux n [] lst
 
-  (* Tests *)
+(* 22 *)
+let range i k =
+  let fn = if i <= k then (-) else (+) in
+  let rec aux acc i k = match k with
+  | k when i = k -> k :: acc
+  | k -> aux (k :: acc) i (fn k 1)
+  in aux [] i k
+
+(* Tests *)
 let () = describe "Lists" @@ fun () ->
 
 test "insert_at" (fun () ->
@@ -29,4 +38,13 @@ test "insert_at" (fun () ->
       insert_at "alfa" 10 ["a";"b";"c";"d"],
       ["a"; "b"; "c"; "d"; "alfa"]
     )
+  ]);
+
+test "range" (fun () ->
+  expect_all [
+    range 1 5, [1;2;3;4;5];
+    range 6 6, [6];
+    range 9 6, [9;8;7;6;];
+    range (-2) 4, [-2;-1;0;1;2;3;4];
+    range 5 (-3), [5;4;3;2;1;0;-1;-2;-3];
   ]);
