@@ -57,18 +57,23 @@ let extract k lst =
   | [] -> []
   | _ :: t as lst ->
     if List.length lst = k
-    (* lst :: acc would be faster, but doesn't preserve order *)
-    then acc @ [lst]
+    then [lst] :: acc
     else
       let (front, back) = split lst (k - 1) in
-      let acc' = acc @ List.map back (fun x -> x :: front) in
+      let acc' = List.map back (fun x -> x :: front) :: acc in
       aux acc' t
   in
     if k <= 1
     then List.map lst (fun x -> [x])
     else
       aux [] lst
-      |. List.map (fun l -> List.sort l Pervasives.compare)
+      |. List.flatten
+      (* Sort for presentation purposes *)
+      |. List.map (fun l -> List.sort l compare)
+      |. List.sort (fun a b ->
+          match (List.head a, List.head b) with
+          | (Some a, Some b) -> compare a b
+          | _ -> 0)
 
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
