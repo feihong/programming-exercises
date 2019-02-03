@@ -42,6 +42,34 @@ let lotto_select n m =
 let permutation lst =
   rand_select lst (List.length lst)
 
+(* 26 *)
+let split lst n =
+  let rec aux count acc = function
+  | [] -> (List.reverse acc , [])
+  | h :: t as lst ->
+    if count <= 0
+    then (List.reverse acc, lst)
+    else aux (count - 1) (h :: acc) t
+  in aux n [] lst
+
+let extract k lst =
+  let rec aux acc = function
+  | [] -> []
+  | _ :: t as lst ->
+    if List.length lst = k
+    (* lst :: acc would be faster, but doesn't preserve order *)
+    then acc @ [lst]
+    else
+      let (front, back) = split lst (k - 1) in
+      let acc' = acc @ List.map back (fun x -> x :: front) in
+      aux acc' t
+  in
+    if k <= 1
+    then List.map lst (fun x -> [x])
+    else
+      aux [] lst
+      |. List.map (fun l -> List.sort l Pervasives.compare)
+
 (* Tests *)
 let () = describe "Lists" @@ fun () ->
 
@@ -104,3 +132,17 @@ test "permutation" (fun () ->
     permutation [1;2;3], [1;3;2];
     permutation [1;2;3], [2;1;3];
   ]);
+
+test "extract" (fun () ->
+  expect_all [
+    extract 2 [], [];
+    extract 1 [1;2;3;4], [[1];[2];[3];[4]];
+    extract 2 [1;2;3], [[1;2];[1;3];[2;3]];
+    extract 3 [1;2;3;4;5], [[1;2;3];[1;2;4];[1;2;5];[2;3;4];[2;3;5];[3;4;5]];
+  ]);
+
+test "extract string" (fun () ->
+  extract 2 ["a";"b";"c";"d"]
+  ===
+  [["a"; "b"]; ["a"; "c"]; ["a"; "d"]; ["b"; "c"]; ["b"; "d"]; ["c"; "d"]]
+);

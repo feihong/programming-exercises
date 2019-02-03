@@ -58,9 +58,9 @@ let drop lst n =
 let split lst n =
   let rec aux count acc = function
   | [] -> (List.reverse acc , [])
-  | h :: t as xs ->
+  | h :: t as lst ->
     if count <= 0
-    then (List.reverse acc, xs)
+    then (List.reverse acc, lst)
     else aux (count - 1) (h :: acc) t
   in aux n [] lst
 
